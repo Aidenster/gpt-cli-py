@@ -1,4 +1,4 @@
-import re
+import re, os
 
 class CommandHandler:
     def __init__(self, util):
@@ -25,10 +25,11 @@ class CommandHandler:
     def handle_command(self, command, argument, conversation_history):
         message = ""
 
-        if command in ["reset_history", "clear_history", "reset_conversation", "clear_conversation"]:
+        if command in ["reset_history", "clear_history", "reset_conversation", "clear_conversation", "reset", "clear"]:
             conversation_history = [{"role": "system", "content": self.util.system_message}]
             self.util.write_conversation_history(conversation_history)
             message = "Conversation history reset."
+            os.system('cls' if os.name == 'nt' else 'clear')
 
         elif command == "read_file" or command == "pre_modify_file":
             file_content = self.util.read_file(argument)
