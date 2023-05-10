@@ -37,6 +37,8 @@ The following commands are supported:
 - `write_file`: Write the last response from the GPT model to a file.
 - `count_tokens`: Count the number of tokens in a file.
 - `modify_file`: Modify a file's content using the GPT model.
+- `smart`: Switch to using GPT-4.
+- `fast`: Switch to using GPT-3.5.
 
 ## Contributing
 

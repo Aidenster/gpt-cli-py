@@ -1,31 +1,31 @@
 import os, json, tiktoken
 
 class Util:
-    def __init__(self, conversation_history_file, system_message, model):
-        self.conversation_history_file = conversation_history_file
-        self.system_message = system_message
-        self.encoding = tiktoken.encoding_for_model(model)
+    def __init__(self, settings):
+        self.settings = settings
 
     def read_conversation_history(self):
-        if os.path.exists(self.conversation_history_file):
-            with open(self.conversation_history_file, "r") as f:
+        if os.path.exists(self.settings.conversation_history_file):
+            with open(self.settings.conversation_history_file, "r") as f:
                 return json.load(f) 
-        return [{"role": "system", "content": self.system_message}]
+        return [{"role": "system", "content": self.settings.system_message}]
 
     def write_conversation_history(self, conversation_history):
-        with open(self.conversation_history_file, "w") as outfile:
+        with open(self.settings.conversation_history_file, "w") as outfile:
             json.dump(conversation_history, outfile, indent=2)
 
     def count_tokens(self, text):
-        return len(self.encoding.encode(text))
+        encoding = tiktoken.encoding_for_model(self.settings.get_model())
+        return len(encoding.encode(text))
 
     def truncate_text(self, text, max_tokens):
+        encoding = tiktoken.encoding_for_model(self.settings.get_model())
         messages = text.split("|||")
         total_tokens = 0
         truncated_messages = []
 
         for message in reversed(messages):
-            message_tokens = self.encoding.encode(message)
+            message_tokens = encoding.encode(message)
             if total_tokens + len(message_tokens) <= max_tokens:
                 truncated_messages.insert(0, message)
                 total_tokens += len(message_tokens)

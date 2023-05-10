@@ -1,8 +1,9 @@
 import re, os
 
 class CommandHandler:
-    def __init__(self, util):
+    def __init__(self, util, settings):
         self.util = util
+        self.settings = settings
         self.pre_prompt_commands = ["read_file"]
         self.post_prompt_commands = ["write_file"]
         self.both_prompt_commands = ["modify_file"]
@@ -26,7 +27,7 @@ class CommandHandler:
         message = ""
 
         if command in ["reset_history", "clear_history", "reset_conversation", "clear_conversation", "reset", "clear"]:
-            conversation_history = [{"role": "system", "content": self.util.system_message}]
+            conversation_history = [{"role": "system", "content": self.settings.system_message}]
             self.util.write_conversation_history(conversation_history)
             message = "Conversation history reset."
             os.system('cls' if os.name == 'nt' else 'clear')
@@ -52,6 +53,14 @@ class CommandHandler:
             else:
                 token_count = self.util.count_tokens(file_content)
                 message += f"Token Count: {token_count}"
+
+        elif command == "fast":
+            self.settings.use_smart_model = False
+            message = "Switched to fast model."
+
+        elif command == "smart":
+            self.settings.use_smart_model = True
+            message = "Switched to smart model."
 
         else:
             message = "Unknown command."
