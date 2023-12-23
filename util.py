@@ -36,7 +36,7 @@ class Util:
 
     def read_file(self, filepath):
         try:
-            with open(filepath, "r") as f:
+            with open(filepath, "r", encoding='utf8') as f:
                 return f.read()
         except Exception as e:
             print(f"An error occurred while reading '{filepath}': {str(e)}")
