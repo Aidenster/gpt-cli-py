@@ -1,4 +1,4 @@
-import re, os
+import re, os, sys
 
 class CommandHandler:
     def __init__(self, util, settings):
@@ -7,6 +7,7 @@ class CommandHandler:
         self.pre_prompt_commands = ["read_file"]
         self.post_prompt_commands = ["write_file"]
         self.both_prompt_commands = ["modify_file"]
+
 
     def process_input(self, user_input):
         command_pattern = re.compile(r'{(.*?)}')
@@ -23,6 +24,7 @@ class CommandHandler:
             return command, argument, user_input, type
         return None, None, user_input, None
     
+
     def handle_command(self, command, argument, conversation_history):
         message = ""
 
@@ -62,11 +64,18 @@ class CommandHandler:
             self.settings.use_smart_model = True
             message = "Switched to smart model."
 
+        elif command == "help":
+            self.print_help()
+
+        elif command == "exit":
+            sys.exit()
+
         else:
             message = "Unknown command."
 
         return message, conversation_history
     
+
     def get_command_type(self, command):
         if command in self.pre_prompt_commands:
             return "pre_prompt"
@@ -78,3 +87,16 @@ class CommandHandler:
             return "command"
         else:
             return None
+
+    def print_help(self):
+        help_text = [
+            "Possible commands:",
+            "- reset_history, clear_history, reset_conversation, clear_conversation, reset, clear: Reset the conversation history.",
+            "- read_file: Read the contents of a file.",
+            "- write_file: Write the last response from the GPT model to a file.",
+            "- count_tokens: Count the number of tokens in a file.",
+            "- modify_file: Modify a file's content using the GPT model.",
+            "- smart: Switch to using GPT-4.",
+            "- fast: Switch to using GPT-3.5."
+        ]
+        print('\n'.join(help_text))
