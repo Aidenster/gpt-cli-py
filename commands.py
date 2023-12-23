@@ -88,9 +88,10 @@ class CommandHandler:
         else:
             return None
 
+
     def print_help(self):
         help_text = [
-            "Possible commands:",
+            "\nPossible commands:",
             "- reset_history, clear_history, reset_conversation, clear_conversation, reset, clear: Reset the conversation history.",
             "- read_file: Read the contents of a file.",
             "- write_file: Write the last response from the GPT model to a file.",
