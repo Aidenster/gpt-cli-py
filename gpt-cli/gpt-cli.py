@@ -1,3 +1,4 @@
+import os
 from openai import OpenAI
 from util import Util
 from settings import Settings
@@ -81,4 +82,5 @@ def main():
             print(output)
 
 if __name__ == "__main__":
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
     main()

@@ -1,0 +1,15 @@
+services:
+  gpt-cli-mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+  gpt-cli:
+    stdin_open: true
+    tty: true
+    build: 
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - .:/gpt-cli
+    depends_on:
+      - gpt-cli-mongodb
