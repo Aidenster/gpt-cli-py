@@ -1,11 +1,11 @@
-import openai
+from openai import OpenAI
 from util import Util
 from settings import Settings
 from commands import CommandHandler
 
 settings = Settings()
 util = Util(settings)
-openai.api_key = settings.api_key
+openai_client = OpenAI(api_key=settings.api_key)
 
 def analyze_input(input, history):
     history.append({"role": "user", "content": input})
@@ -27,23 +27,23 @@ def ask_gpt(history):
         new_history = history
 
     try:
-        response = openai.ChatCompletion.create(model=settings.get_model(), messages=new_history, temperature=settings.temperature, stream=settings.stream_response)
+        response = openai_client.chat.completions.create(model=settings.get_model(), messages=new_history, temperature=settings.temperature, stream=settings.stream_response)
         model_type = "smart" if settings.use_smart_model else "fast"
 
         if settings.stream_response:
             print(f"GPT ({model_type}): ", end='')
             collected_messages = []
             for chunk in response:
-                chunk_message = chunk['choices'][0]['delta']
+                chunk_message = chunk.choices[0].delta.content or ''
                 collected_messages.append(chunk_message)
-                print(chunk_message.get('content', ''), end='')
+                print(chunk_message, end='')
             print("\n", end='')
 
-            full_reply_content = ''.join([m.get('content', '') for m in collected_messages])
+            full_reply_content = ''.join([msg for msg in collected_messages])
             return full_reply_content
         else:
             print(f"GPT ({model_type}): " + response)
-            return response["choices"][0]["message"]["content"].strip()
+            return response.choices[0].message.content.strip()
     except Exception as e:
         print(f"An error occurred: {str(e)}")
         return None
